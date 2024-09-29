@@ -2,8 +2,8 @@ import pyaudio
 import numpy as np
 import scipy.io.wavfile
 
-RATE = 12000
 def record_audio(output_name):
+	RATE = 12000
 	CHUNK = 1024
 	FORMAT = pyaudio.paFloat32
 	CHANNELS = 1
@@ -35,4 +35,4 @@ def record_audio(output_name):
 	print("STOP {} Samples {:.2f}s".format(frame.size, frame.size/RATE))
 	scipy.io.wavfile.write(output_name, RATE, frame)
 
-record_audio("test.wav")
+# record_audio("test.wav")
