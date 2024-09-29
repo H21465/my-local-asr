@@ -1,9 +1,8 @@
 import pyaudio
 import numpy as np
-import scipy.io.wavfile
 
-def record_audio(output_name):
-	RATE = 12000
+def record_audio(duration=3):
+	RATE = 16000
 	CHUNK = 1024
 	FORMAT = pyaudio.paFloat32
 	CHANNELS = 1
@@ -15,24 +14,15 @@ def record_audio(output_name):
 			input = True,
 			frames_per_buffer = CHUNK)
 
-	print("RECORD START")
-	print("ctrl + c : STOP RECORDING")
-
-	frame = []
-	while True:
-		try:
-			d = stream.read(CHUNK)
-			d = np.frombuffer(d, dtype=np.float32)
-			frame.append(d)
-		except KeyboardInterrupt:
-			break
-
+	frames = []
+	for _ in range(0, int(RATE / CHUNK * duration)):
+		data = stream.read(CHUNK)
+		frames.append(np.frombuffer(data, dtype=np.float32))
+	
 	stream.stop_stream()
 	stream.close()
 	pa.terminate()
-
-	frame = np.array(frame).flatten()
-	print("STOP {} Samples {:.2f}s".format(frame.size, frame.size/RATE))
-	scipy.io.wavfile.write(output_name, RATE, frame)
+	
+	return np.concatenate(frames)
 
 # record_audio("test.wav")
