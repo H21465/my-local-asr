@@ -36,4 +36,4 @@ def main():
         print("Recording stopped by user.")
 
 if __name__ == "__main__":
-    うmain()
+    main()
