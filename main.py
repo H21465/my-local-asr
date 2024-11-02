@@ -10,10 +10,17 @@ def record_audio_thread(audio_queue):
 		audio_queue.put(frame)
 
 def transcribe_audio_thread(audio_queue):
+	filtered_phrases = [
+		"ご視聴ありがとうございました",
+		"おやすみなさい。",
+		"ありがとうございました",
+		"お疲れ様でした",
+		"お待ちしております",
+	]
 	while True:
 		frame = audio_queue.get()
 		text = mlx_whisper.transcribe(frame, path_or_hf_repo="mlx-community/whisper-large-v3-turbo", language="ja")
-		if text["text"].strip() and text["text"] != "ご視聴ありがとうございました" and text["text"] != "おやすみなさい" and text["text"] != "ありがとうございました":
+		if text["text"].strip() and text["text"] not in filtered_phrases:
 			print(text["text"])
 		audio_queue.task_done()
 
